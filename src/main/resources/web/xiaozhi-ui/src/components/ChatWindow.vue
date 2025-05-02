@@ -61,6 +61,7 @@
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
+import { marked } from 'marked'
 
 const messaggListRef = ref()
 const isSending = ref(false)
@@ -126,7 +127,16 @@ const sendRequest = (message) => {
         onDownloadProgress: (e) => {
           const fullText = e.event.target.responseText // 累积的完整文本
           let newText = fullText.substring(lastMsg.content.length)
-          lastMsg.content += newText //增量更新
+          const outputRegex = /~~Output~~(.*?)(?=~~)/s;
+          const match = newText.match(outputRegex);
+          let markdownContent = '';
+          if (match && match[1]) {
+            markdownContent = match[1]; // 只取 Output 部分
+          } else {
+            // 如果未找到完整 Output 标记，暂存原始文本用于后续拼接
+            markdownContent = newText;
+          }
+          lastMsg.content += marked.parse(markdownContent) //增量更新
           console.log(lastMsg)
           scrollToBottom() // 实时滚动
         },
