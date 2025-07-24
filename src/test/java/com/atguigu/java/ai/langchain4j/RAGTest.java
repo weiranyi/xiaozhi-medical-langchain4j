@@ -19,7 +19,7 @@ public class RAGTest {
     public void testReadDocument() {
         //使用FileSystemDocumentLoader读取指定目录下的知识库文档
         //并使用默认的文档解析器TextDocumentParser对文档进行解析
-        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\测试.txt");
+        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\测试.txt");
         System.out.println(document.text());
     }
 
@@ -29,7 +29,7 @@ public class RAGTest {
     @Test
     public void testParsePDF() {
         Document document = FileSystemDocumentLoader.loadDocument(
-                "C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\doc\\尚硅谷-Java+大模型-硅谷小智（医疗版）.pdf",
+                "C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\尚硅谷-Java+大模型-硅谷小智（医疗版）.pdf",
                 new ApachePdfBoxDocumentParser()
         );
         System.out.println(document);
@@ -42,7 +42,7 @@ public class RAGTest {
 
         //使用FileSystemDocumentLoader读取指定目录下的知识库文档
         //并使用默认的文档解析器对文档进行解析(TextDocumentParser)
-        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\doc\\尚硅谷-Java+大模型-硅谷小智（医疗版）.md");
+        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\尚硅谷-Java+大模型-硅谷小智（医疗版）.md");
 
         //为了简单起见，我们暂时使用基于内存的向量存储
         InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
@@ -64,7 +64,7 @@ public class RAGTest {
 
         //使用FileSystemDocumentLoader读取指定目录下的知识库文档
         //并使用默认的文档解析器对文档进行解析(TextDocumentParser)
-        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\doc\\尚硅谷-Java+大模型-硅谷小智（医疗版）.md");
+        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\尚硅谷-Java+大模型-硅谷小智（医疗版）.md");
 
 
         //为了简单起见，我们暂时使用基于内存的向量存储

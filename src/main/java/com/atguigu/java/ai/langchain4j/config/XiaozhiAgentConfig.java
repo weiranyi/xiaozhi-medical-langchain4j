@@ -38,9 +38,9 @@ public class XiaozhiAgentConfig {
     ContentRetriever contentRetrieverXiaozhi() {
         //使用FileSystemDocumentLoader读取指定目录下的知识库文档
         //并使用默认的文档解析器对文档进行解析
-        Document document1 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\doc\\knowledge\\医院信息.md");
-        Document document2 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\doc\\knowledge\\科室信息.md");
-        Document document3 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\IdeaProjects\\java-io-langchain4j\\src\\main\\resources\\doc\\knowledge\\神经内科.md");
+        Document document1 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\knowledge\\医院信息.md");
+        Document document2 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\knowledge\\科室信息.md");
+        Document document3 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\knowledge\\神经内科.md");
         List<Document> documents = Arrays.asList(document1, document2, document3);
 
         //使用内存向量存储
