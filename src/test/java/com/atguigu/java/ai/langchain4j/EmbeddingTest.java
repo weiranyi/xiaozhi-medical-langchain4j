@@ -88,8 +88,7 @@ public class EmbeddingTest {
         Document document2 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\knowledge\\科室信息.md");
         Document document3 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\knowledge\\神经内科.md");
         Document document4 = FileSystemDocumentLoader.loadDocument("C:\\Users\\60260\\Desktop\\xiaozhi-medical-langchain4j\\src\\main\\resources\\doc\\knowledge\\测试数据.md");
-//        List<Document> documents = Arrays.asList(document1, document2, document3);
-        List<Document> documents = Arrays.asList(document4);
+        List<Document> documents = Arrays.asList(document1, document2, document3,document4);
 
         //文本向量化并存入向量数据库：将每个片段进行向量化，得到一个嵌入向量
         EmbeddingStoreIngestor
