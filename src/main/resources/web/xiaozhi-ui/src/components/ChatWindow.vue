@@ -297,72 +297,13 @@ const newChat = () => {
   flex-direction: column;
 }
 
-.message {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
-  display: flex;
-  /* align-items: center; */
-}
-
-.user-message {
-  max-width: 70%;
-  background-color: #e1f5fe;
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-
-.bot-message {
-  max-width: 100%;
-  background-color: #f1f8e9;
-  align-self: flex-start;
-}
-
-.message-icon {
-  margin: 0 10px;
-  font-size: 1.2em;
-}
-
-.loading-dots {
-  padding-left: 5px;
-}
-
-.dot {
-  display: inline-block;
-  margin-left: 5px;
-  width: 8px;
-  height: 8px;
-  background-color: #000000;
-  border-radius: 50%;
-  animation: pulse 1.2s infinite ease-in-out both;
-}
-
-.dot:nth-child(2) {
-  animation-delay: -0.6s;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(0.6);
-    opacity: 0.4;
-  }
-
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 .input-container {
   display: flex;
+  /* 确保输入框容器不会被挤压 */
+  flex-shrink: 0;
 }
 
-.input-container .el-input {
-  flex: 1;
-  margin-right: 10px;
-}
-
-/* 媒体查询，当设备宽度小于等于 768px 时应用以下样式 */
+/* 媒体查询，当设备宽度小于等于 768px 时应用以下样式 */ 
 @media (max-width: 768px) {
   .main-content {
     padding: 10px 0 10px 0;
@@ -398,6 +339,18 @@ const newChat = () => {
     margin-right: 30px;
     width: auto;
     margin-top: 5px;
+  }
+
+  /* 新增移动端输入框和发送按钮样式 */ 
+  .input-container {
+    padding: 0 10px 10px 10px;
+    /* 新增上边距，将输入框上移 */ 
+    margin-bottom: 50vw;
+  }
+
+  .input-container .el-input {
+    flex: 1;
+    margin-right: 5px;
   }
 }
 
