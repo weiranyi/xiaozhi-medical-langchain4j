@@ -30,7 +30,7 @@
             ></i>
             <!-- 会话内容 -->
             <span>
-              <span v-html="message.content"></span>
+              <span v-html="message.htmlContent"></span>
               <!-- loading -->
               <span
                 class="loading-dots"
@@ -40,6 +40,7 @@
                 <span class="dot"></span>
               </span>
             </span>
+            <!-- <div class="message-content" v-html="message.htmlContent"></div> -->
           </div>
         </div>
         <div class="input-container">
@@ -61,6 +62,8 @@
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
+// 导入marked库
+import {marked} from 'marked';
 
 const messaggListRef = ref()
 const isSending = ref(false)
@@ -85,6 +88,7 @@ const hello = () => {
   sendRequest('你好')
 }
 
+// 在创建新消息时添加htmlContent属性
 const sendMessage = () => {
   if (inputMessage.value.trim()) {
     sendRequest(inputMessage.value.trim())
@@ -97,6 +101,7 @@ const sendRequest = (message) => {
   const userMsg = {
     isUser: true,
     content: message,
+    htmlContent: marked.parse(message),
     isTyping: false,
     isThinking: false,
   }
@@ -110,6 +115,7 @@ const sendRequest = (message) => {
   const botMsg = {
     isUser: false,
     content: '', // 增量填充
+    htmlContent: '', // 添加此行
     isTyping: true, // 显示加载动画
     isThinking: false,
   }
@@ -127,8 +133,10 @@ const sendRequest = (message) => {
           const fullText = e.event.target.responseText // 累积的完整文本
           let newText = fullText.substring(lastMsg.content.length)
           lastMsg.content += newText //增量更新
+          // 将Markdown转换为HTML
+          lastMsg.htmlContent = marked(lastMsg.content);
           console.log(lastMsg)
-          scrollToBottom() // 实时滚动
+          scrollToBottom()
         },
       }
     )
