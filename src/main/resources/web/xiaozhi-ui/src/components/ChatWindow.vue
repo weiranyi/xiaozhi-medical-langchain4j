@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 // 导入marked库
@@ -70,12 +70,20 @@ const isSending = ref(false)
 const uuid = ref()
 const inputMessage = ref('')
 const messages = ref([])
+// 语音朗读相关变量
+const speechSynthesis = window.speechSynthesis
+const speechQueue = ref([])
+const isSpeaking = ref(false)
 
 onMounted(() => {
   initUUID()
-  // 移除 setInterval，改用手动滚动
   watch(messages, () => scrollToBottom(), { deep: true })
   hello()
+})
+
+onUnmounted(() => {
+  // 组件卸载时清除语音
+  if (speechSynthesis) speechSynthesis.cancel()
 })
 
 const scrollToBottom = () => {
@@ -96,6 +104,9 @@ const sendMessage = () => {
   }
 }
 
+// 新增延迟处理定时器
+const speechTimer = ref(null)
+
 const sendRequest = (message) => {
   isSending.value = true
   const userMsg = {
@@ -105,18 +116,15 @@ const sendRequest = (message) => {
     isTyping: false,
     isThinking: false,
   }
-  //第一条默认发送的用户消息”你好“不放入会话列表
   if(messages.value.length > 0){
     messages.value.push(userMsg)
   }
 
-
-  // 添加机器人加载消息
   const botMsg = {
     isUser: false,
-    content: '', // 增量填充
-    htmlContent: '', // 添加此行
-    isTyping: true, // 显示加载动画
+    content: '',
+    htmlContent: '',
+    isTyping: true,
     isThinking: false,
   }
   messages.value.push(botMsg)
@@ -128,20 +136,30 @@ const sendRequest = (message) => {
       '/api/xiaozhi/chat',
       { memoryId: uuid.value, message },
       {
-        responseType: 'stream', // 必须为合法值 "text"
+        responseType: 'stream',
         onDownloadProgress: (e) => {
-          const fullText = e.event.target.responseText // 累积的完整文本
+          const fullText = e.event.target.responseText
           let newText = fullText.substring(lastMsg.content.length)
-          lastMsg.content += newText //增量更新
-          // 将Markdown转换为HTML
+          lastMsg.content += newText
           lastMsg.htmlContent = marked(lastMsg.content);
-          console.log(lastMsg)
+          
+          // 实时语音朗读 - 立即朗读新增内容
+          if (newText.trim()) {
+            speechQueue.value.push(newText)
+            // 清除之前的定时器
+            clearTimeout(speechTimer.value)
+            // 设置 500ms 延迟后处理语音队列
+            speechTimer.value = setTimeout(() => {
+              if (!isSpeaking.value) {
+                processSpeechQueue()
+              }
+            }, 500)
+          }
           scrollToBottom()
         },
       }
     )
     .then(() => {
-      // 流结束后隐藏加载动画
       messages.value.at(-1).isTyping = false
       isSending.value = false
     })
@@ -153,6 +171,41 @@ const sendRequest = (message) => {
     })
 }
 
+// 修改语音朗读函数
+const processSpeechQueue = () => {
+  if (speechQueue.value.length > 0 && !isSpeaking.value) {
+    isSpeaking.value = true
+    // 合并队列中的所有文本
+    const textToSpeak = speechQueue.value.join('')
+    speechQueue.value = []
+    
+    const utterance = new SpeechSynthesisUtterance(textToSpeak)
+    utterance.lang = 'zh-CN'
+    utterance.rate = 1.2
+    utterance.pitch = 1.0
+    utterance.volume = 1.0
+    
+    utterance.onend = () => {
+      isSpeaking.value = false
+      // 如果队列中又有新内容，继续处理
+      if (speechQueue.value.length > 0) {
+        processSpeechQueue()
+      }
+    }
+    
+    utterance.onerror = () => {
+      isSpeaking.value = false
+      if (speechQueue.value.length > 0) {
+        processSpeechQueue()
+      }
+    }
+    
+    speechSynthesis.speak(utterance)
+  }
+}
+
+// 移除旧的语音朗读相关函数：speakText, speakTextIncremental
+// 移除旧的变量：speechTimer, lastSpokenIndex
 // 初始化 UUID
 const initUUID = () => {
   let storedUUID = localStorage.getItem('user_uuid')
@@ -188,7 +241,6 @@ const newChat = () => {
   localStorage.removeItem('user_uuid')
   window.location.reload()
 }
-
 </script>
 <style scoped>
 .app-layout {
